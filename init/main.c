@@ -1109,7 +1109,7 @@ static int __ref kernel_init(void *unused)
 	system_state = SYSTEM_RUNNING;
 	numa_default_policy();
 
-	printk(KERN_ERR "\n##### Nikhil Iyer (UFID: 6829-3939) Howdy partner #####\n\n");
+	printk(KERN_ERR "\n##### Nikhil Iyer (Exercise 2) #####\n\n");
 	rcu_end_inkernel_boot();
 
 	if (ramdisk_execute_command) {
