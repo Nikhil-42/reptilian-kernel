@@ -436,6 +436,11 @@ asmlinkage long sys_getdents64(unsigned int fd,
 				struct linux_dirent64 __user *dirent,
 				unsigned int count);
 
+/* proc_log */
+asmlinkage long __x64_sys_get_proc_log_level();
+asmlinkage long __x64_sys_set_proc_log_level(int new_level);
+asmlinkage long __x64_sys_proc_log(const char* __user msg, int level);
+
 /* fs/read_write.c */
 asmlinkage long sys_llseek(unsigned int fd, unsigned long offset_high,
 			unsigned long offset_low, loff_t __user *result,

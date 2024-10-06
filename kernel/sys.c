@@ -135,6 +135,8 @@
  * architectures that now have 32-bit UID/GID but didn't in the past
  */
 
+int log_level = 0;
+
 int overflowuid = DEFAULT_OVERFLOWUID;
 int overflowgid = DEFAULT_OVERFLOWGID;
 
@@ -2807,3 +2809,15 @@ COMPAT_SYSCALL_DEFINE1(sysinfo, struct compat_sysinfo __user *, info)
 	return 0;
 }
 #endif /* CONFIG_COMPAT */
+
+SYSCALL_DEFINE0(get_proc_log_level) {
+	return -1;
+}
+
+SYSCALL_DEFINE1(set_proc_log_level,int,new_level) {
+	return -1;
+}
+
+SYSCALL_DEFINE2(proc_log_message,char*,message,int,level) {
+	return -1;
+}
