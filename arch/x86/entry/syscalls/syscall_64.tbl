@@ -345,6 +345,9 @@
 334	common	rseq			__x64_sys_rseq
 424	common	pidfd_send_signal	__x64_sys_pidfd_send_signal
 434	common	pidfd_open		__x64_sys_pidfd_open
+435 common  get_proc_log_level   __x64_sys_get_proc_log_level
+436 common  set_proc_log_level   __x64_sys_set_proc_log_level
+437 common  proc_log_message     __x64_sys_proc_log_message
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact

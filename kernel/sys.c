@@ -135,6 +135,8 @@
  * architectures that now have 32-bit UID/GID but didn't in the past
  */
 
+int proc_log_level = 0;
+
 int overflowuid = DEFAULT_OVERFLOWUID;
 int overflowgid = DEFAULT_OVERFLOWGID;
 
@@ -2807,3 +2809,67 @@ COMPAT_SYSCALL_DEFINE1(sysinfo, struct compat_sysinfo __user *, info)
 	return 0;
 }
 #endif /* CONFIG_COMPAT */
+
+SYSCALL_DEFINE0(get_proc_log_level) {
+	return proc_log_level;
+}
+
+SYSCALL_DEFINE1(set_proc_log_level,int,new_level) {
+	if (__kuid_val(current_uid()) == 0) {
+		proc_log_level = new_level;
+		return 0;
+	}
+	return -1;
+}
+
+#define __PROC_LOG_MESSAGE(kern_log_level, proc_log_level_name) printk(kern_log_level proc_log_level_name " [%s, %d]: %s", task->comm, task->pid, sys_message)
+SYSCALL_DEFINE2(proc_log_message,char*,message,int,level) {
+	char sys_message[129];
+	struct task_struct *task = current;
+
+	if (0 > level || level > 7) {
+		return -1;
+	}
+
+	if (level > proc_log_level) {
+		return 0;
+	}
+
+	if (strnlen_user(message, sizeof(sys_message)) >= sizeof(sys_message))
+	{
+		return -1;
+	}
+
+	if (copy_from_user(sys_message, message, sizeof(sys_message))) {
+		return -1;
+	}
+
+
+	switch (level) {
+		case 0:
+			__PROC_LOG_MESSAGE(KERN_EMERG,"PROC_OVERRIDE");
+			break;
+		case 1:
+			__PROC_LOG_MESSAGE(KERN_ALERT,"PROC_ALERT");
+			break;
+		case 2:
+			__PROC_LOG_MESSAGE(KERN_CRIT,"PROC_CRITICAL");
+			break;
+		case 3:
+			__PROC_LOG_MESSAGE(KERN_ERR,"PROC_ERROR");
+			break;
+		case 4:
+			__PROC_LOG_MESSAGE(KERN_WARNING,"PROC_WARNING");
+			break;
+		case 5:
+			__PROC_LOG_MESSAGE(KERN_NOTICE,"PROC_NOTICE");
+			break;
+		case 6:
+			__PROC_LOG_MESSAGE(KERN_INFO,"PROC_INFO");
+			break;
+		case 7:
+			__PROC_LOG_MESSAGE(KERN_DEBUG,"PROC_DEBUG");
+			break;
+	}
+	return 0;
+}
